@@ -9,7 +9,7 @@ const Navbar = () => {
       <MobileSidebar />
        <div className='flex justify-end w-full'>
        <SignedIn>
-          <UserButton />
+          <UserButton  />
         </SignedIn>
        </div>
 

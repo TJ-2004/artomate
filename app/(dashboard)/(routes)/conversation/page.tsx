@@ -1,16 +1,24 @@
 "use client";
 import * as z from "zod";
+import axios from "axios";
 import Heading from "@/components/heading";
 import { MessageSquare } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { formSchema } from "./constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
+import { useRouter } from "next/navigation";
+import EmptyComponent from "@/components/empty";
+interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
 const ConversationPage = () => {
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -18,8 +26,31 @@ const ConversationPage = () => {
     },
   });
   const isLoading = form.formState.isSubmitting;
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log("values");
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const userMessage: ChatMessage = {
+        role: "user",
+        content: values.prompt,
+      };
+      const newMessages = [...messages, userMessage];
+      // console.log(userMessage);
+      const response = await axios.post("/api/conversation", {
+        question: [{ content: userMessage.content }],
+      });
+      // console.log({ content: userMessage.content });
+      const assistantMessage: ChatMessage = {
+        role: "assistant",
+        content: response.data.reply.content, // Assuming this is the assistant's reply
+      };
+      setMessages((current) => [...current, userMessage, assistantMessage]);
+      // console.log(messages);
+      form.reset();
+    } catch (error: any) {
+      //To do Open Pro Model
+      console.error("Error during API call:", error);
+    } finally {
+      router.refresh();
+    }
   };
   return (
     <div>
@@ -30,7 +61,7 @@ const ConversationPage = () => {
         iconColor="text-violet-500"
         bgColor="bg-violet-500/10"
       />
-      <div>
+      <div className="px-4 lg-px-8">
         <div>
           <Form {...form}>
             <form
@@ -61,7 +92,15 @@ const ConversationPage = () => {
             </form>
           </Form>
         </div>
-        <div className="space-y-4  mt-4">Message Content</div>
+
+        <div className="space-y-4  mt-4">
+          {messages.length === 0 && !isLoading && <EmptyComponent />}
+          <div className="flex flex-col-reverse gap-y-4">
+            {messages.map((message, index) => (
+              <div key={`${message.content}-${index}`}> {message.content}</div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

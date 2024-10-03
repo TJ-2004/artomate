@@ -67,8 +67,8 @@ const Sidebar = () => {
     <div className="space-y-4 py-4 flex flex-col h-full bg-[#111827] text-white">
       <div className="px-3 py-2 flex-1">
         <Link href="/dashboard" className="flex items-center pl-3 mb-14">
-          <div className="relative h-8 w-8 mr-4">
-            {/* <Image fill src="./" alt="Logo" /> */}
+          <div className="relative h-8 w-8 mr-2 ">
+            <Image src="/logo.png" alt="Logo" fill className=" rounded-full" />
           </div>
           <h1 className={cn("text-2xl font-bold", montserrat.className)}>
             Artomate

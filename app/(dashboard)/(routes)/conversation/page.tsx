@@ -9,9 +9,13 @@ import { formSchema } from "./constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import EmptyComponent from "@/components/empty";
+import LoadingComponent from "@/components/loader";
+import { cn } from "@/lib/utils";
+import AvatarComponent from "@/components/userAvatar";
+import BotAvatarComponent from "@/components/botAvatar";
+import PulsatingButton from "@/components/ui/pulsating-button";
 interface ChatMessage {
   role: "user" | "assistant";
   content: string;
@@ -83,21 +87,41 @@ const ConversationPage = () => {
                   </FormItem>
                 )}
               />
-              <Button
-                className="col-span-12 lg:col-span-2 w-full"
+              <PulsatingButton
+                className="col-span-12 lg:col-span-2 w-full bg-[#111827]"
                 disabled={isLoading}
               >
                 Generate
-              </Button>
+              </PulsatingButton>
             </form>
           </Form>
         </div>
 
-        <div className="space-y-4  mt-4">
-          {messages.length === 0 && !isLoading && <EmptyComponent />}
+        <div className="space-y-4 mt-4">
+          {isLoading && (
+            <div className="p-8 rounded-lg flex w-full items-center justify-center bg-muted">
+              <LoadingComponent label="Artomate is thinking..." />
+            </div>
+          )}
+          {messages.length === 0 && !isLoading && (
+            <EmptyComponent label="What's on your mind?. Just type it!!" />
+          )}
           <div className="flex flex-col-reverse gap-y-4">
             {messages.map((message, index) => (
-              <div key={`${message.content}-${index}`}> {message.content}</div>
+              <div
+                key={`${message.content}-${index}`}
+                className={cn(
+                  "p-8 w-full flex items-start gap-x-8 rounded-lg bg-muted ",
+                  message.role === "user" ? " text-black " : "text-black"
+                )}
+              >
+                {message.role === "user" ? (
+                  <AvatarComponent />
+                ) : (
+                  <BotAvatarComponent />
+                )}
+                <p className="text-sm">{message.content}</p>
+              </div>
             ))}
           </div>
         </div>

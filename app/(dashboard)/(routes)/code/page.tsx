@@ -2,9 +2,9 @@
 import * as z from "zod";
 import axios from "axios";
 import Heading from "@/components/heading";
-import { MessageSquare } from "lucide-react";
-import ReactMarkdown from "react-markdown";
+import { Code } from "lucide-react";
 import React, { useState } from "react";
+import ReactMarkdown from "react-markdown";
 import { useForm } from "react-hook-form";
 import { formSchema } from "./constants";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,7 +21,7 @@ interface ChatMessage {
   role: "user" | "assistant";
   content: string;
 }
-const ConversationPage = () => {
+const CodePage = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -39,7 +39,7 @@ const ConversationPage = () => {
       };
       const newMessages = [...messages, userMessage];
       // console.log(userMessage);
-      const response = await axios.post("/api/conversation", {
+      const response = await axios.post("/api/code", {
         question: [{ content: userMessage.content }],
       });
       // console.log({ content: userMessage.content });
@@ -60,11 +60,11 @@ const ConversationPage = () => {
   return (
     <div>
       <Heading
-        title="Conversation"
-        description="Our most advanced conversation model."
-        icon={MessageSquare}
-        iconColor="text-violet-500"
-        bgColor="bg-violet-500/10"
+        title="Code Generation"
+        description="Generate Code using descriptive text."
+        icon={Code}
+        iconColor="text-green-700"
+        bgColor="bg-green-700/10"
       />
       <div className="px-4 lg-px-8">
         <div>
@@ -79,7 +79,7 @@ const ConversationPage = () => {
                   <FormItem className="col-span-12 lg:col-span-10">
                     <FormControl className="m-0 p-0">
                       <Input
-                        placeholder="How do I calculate the radius of circle?"
+                        placeholder="Simple toggle button using react hooks."
                         {...field}
                         className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                         disabled={isLoading}
@@ -122,20 +122,20 @@ const ConversationPage = () => {
                   <BotAvatarComponent />
                 )}
                 <ReactMarkdown
-                  // components={{
-                  //   pre: ({ node, ...props }) => (
-                  //     <div className="overflow-auto w-full my-2 bg-black/10 p-2 rounded-lg">
-                  //       <pre {...props} />
-                  //     </div>
-                  //   ),
-                  //   code: ({ node, ...props }) => (
-                  //     <code
-                  //       className="bg-black/10 rounded-lg p-1 "
-                  //       {...props}
-                  //     />
-                  //   ),
-                  // }}
-                  className="overflow-hidden text-sm leading-7"
+                  components={{
+                    pre: ({ node, ...props }) => (
+                      <div className="overflow-auto w-full my-2 bg-black/10 p-2 rounded-lg">
+                        <pre {...props} />
+                      </div>
+                    ),
+                    code: ({ node, ...props }) => (
+                      <code
+                        className="bg-black/10 rounded-lg p-1 "
+                        {...props}
+                      />
+                    ),
+                  }}
+                  className="text-sm overflow-hidden leading-7"
                 >
                   {message.content || ""}
                 </ReactMarkdown>
@@ -148,4 +148,4 @@ const ConversationPage = () => {
   );
 };
 
-export default ConversationPage;
+export default CodePage;

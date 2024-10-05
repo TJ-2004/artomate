@@ -100,7 +100,7 @@ const ConversationPage = () => {
 
         <div className="space-y-4 mt-4">
           {isLoading && (
-            <div className="p-8 rounded-lg flex w-full items-center justify-center bg-muted">
+            <div className="p-8 rounded-lg flex w-full items-center justify-center">
               <LoadingComponent label="Artomate is thinking..." />
             </div>
           )}

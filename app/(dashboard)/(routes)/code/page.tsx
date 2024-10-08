@@ -105,7 +105,7 @@ const CodePage = () => {
             </div>
           )}
           {messages.length === 0 && !isLoading && (
-            <EmptyComponent label="What's on your mind?. Just type it!!" />
+            <EmptyComponent label="Transform your ideas into reality with AI-powered code generation at your fingertips!" />
           )}
           <div className="flex flex-col-reverse gap-y-4">
             {messages.map((message, index) => (

@@ -2,7 +2,6 @@
 
 import { Card } from "@/components/ui/card";
 import WordPullUp from "@/components/ui/word-pull-up";
-import FlipText from "@/components/ui/flip-text";
 import { cn } from "@/lib/utils";
 import {
   ArrowRight,

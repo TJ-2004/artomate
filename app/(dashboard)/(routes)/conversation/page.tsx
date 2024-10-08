@@ -105,7 +105,7 @@ const ConversationPage = () => {
             </div>
           )}
           {messages.length === 0 && !isLoading && (
-            <EmptyComponent label="What's on your mind?. Just type it!!" />
+            <EmptyComponent label="What's on your mind?. Just Ask Me!!" />
           )}
           <div className="flex flex-col-reverse gap-y-4">
             {messages.map((message, index) => (

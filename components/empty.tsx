@@ -1,16 +1,15 @@
 import Image from "next/image";
 import React from "react";
-import LetterPullup from "@/components/ui/letter-pullup";
+import WordPullUp from "./ui/word-pull-up";
 interface EmptyProps {
   label: string;
 }
 const EmptyComponent = ({ label }: EmptyProps) => {
   return (
     <div className="h-full p-20 flex flex-col items-center">
-        <LetterPullup
+        <WordPullUp
           className="text-muted text-center  w-full  text-2xl sm:text-3xl text-wrap"
           words={label}
-          delay={0.05}
         />
     </div>
   );

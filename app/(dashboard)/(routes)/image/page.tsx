@@ -25,9 +25,16 @@ import {
 import { Card, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+
+interface Image {
+  id: string;
+  prompt: string;
+  src: string;
+}
 const ImageGenerationPage = () => {
   const router = useRouter();
-  const [images, setImages] = useState<string[]>([]);
+  const [query, setQuery] = useState<string>("");
+  const [images, setImages] = useState<Image[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,11 +47,17 @@ const ImageGenerationPage = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setImages([]);
-      // console.log(values);
-      const response = await axios.post("/api/image", values);
-      const urls = response.data.map((image: { url: string }) => image.url);
-      setImages(urls);
-      form.reset();
+      const response = await axios.get<{ images: Image[] }>(
+        `https://lexica.art/api/v1/search?q=${values.prompt}`
+      );
+      const amount = parseInt(values.amount, 10);
+      const limitedImages = response.data.images.slice(0, amount);
+      setImages(limitedImages);
+      form.reset({
+        prompt: values.prompt,
+        amount: values.amount,
+        resolution: values.resolution,
+      });
     } catch (error: any) {
       console.error("Error during API call:", error);
     } finally {
@@ -157,14 +170,20 @@ const ImageGenerationPage = () => {
             <EmptyComponent label="Type your text and let AI generate an image instantly!" />
           )}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
-            {images.map((src) => (
-              <Card key={src} className="rounded-lg overflow-hidden">
+            {images.map((image) => (
+              <Card key={image.id} className="rounded-lg overflow-hidden">
                 <div className="relative aspect-square">
-                  <Image alt="Image" fill src={src} />
+                    <Image
+                      key={image.id}
+                      src={image.src}
+                      alt={image.prompt}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
                 </div>
                 <CardFooter className="p-2">
                   <Button
-                    onClick={() => window.open(src)}
+                    onClick={() => window.open(image.src)}
                     variant="secondary"
                     className="w-full"
                   >

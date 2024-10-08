@@ -49,7 +49,7 @@ const CodePage = () => {
       };
       setMessages((current) => [...current, userMessage, assistantMessage]);
       // console.log(messages);
-      form.reset();
+      form.reset({ prompt: values.prompt });
     } catch (error: any) {
       //To do Open Pro Model
       console.error("Error during API call:", error);

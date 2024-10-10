@@ -7,6 +7,7 @@ import {
   SignedOut,
   UserButton
 } from "@clerk/nextjs";
+import { CrispProvider } from "@/components/crisp-provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,6 +33,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
+        <CrispProvider />
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >

@@ -41,7 +41,7 @@ const LandingHero = () => {
           </RainbowButton>
         </Link>
       </div>
-      <div className="text-zinc-400 text-xs md:text-sm font-mormal">
+      <div className="text-zinc-400 text-sm md:text-lg font-mormal">
         Your imagination, Artomate generate everything you need, all at no cost!
       </div>
       <FloatingDockDemo />

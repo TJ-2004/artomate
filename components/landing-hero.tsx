@@ -3,7 +3,10 @@ import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import React from "react";
 import TypewriterComponent from "typewriter-effect";
-import { Button } from "@/components/ui/button";
+import { FloatingDockDemo } from "@/components/ui/floating-dock-demo";
+import { RainbowButton } from "./ui/rainbow-button";
+import WordPullUp from "./ui/word-pull-up";
+import { ArrowRight } from "lucide-react";
 const LandingHero = () => {
   const { isSignedIn } = useAuth();
   return (
@@ -28,21 +31,20 @@ const LandingHero = () => {
         </div>
       </div>
       <div className="text-sm md:text-xl font-light text-zinc-400">
-        Create content using AI 10x faster.
+        <WordPullUp words="Create content using AI 10x faster." />
       </div>
-      <div>
+      <div className="flex items-center justify-center p-2">
         <Link href={isSignedIn ? "/dashboard" : "/sign-up"}>
-          <Button
-            variant="outline"
-            className="md:text-lg p-4 md:p-6 rounded-full font-semibold relative z-10"
-          >
-            Start Generating For Free
-          </Button>
+          <RainbowButton className="gap-3 p-5">
+            <p className="text-xl">Start Generating For Free</p>
+            <ArrowRight className="text-white" />
+          </RainbowButton>
         </Link>
       </div>
       <div className="text-zinc-400 text-xs md:text-sm font-mormal">
-        No credit card required.
+        Your imagination, Artomate generate everything you need, all at no cost!
       </div>
+      <FloatingDockDemo />
     </div>
   );
 };

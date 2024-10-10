@@ -59,7 +59,7 @@ const routes = [
     href: "/settings",
   },
 ];
-const Sidebar = () => {
+const Sidebar = ({ closeSidebar }: { closeSidebar?: () => void }) => {
   const pathname = usePathname();
 
   return (
@@ -78,6 +78,7 @@ const Sidebar = () => {
           {routes.map((route) => (
             <Link
               href={route.href}
+              onClick={closeSidebar}
               key={route.href}
               className={cn(
                 "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-white/10 rounded-lg transition",

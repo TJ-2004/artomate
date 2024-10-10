@@ -4,26 +4,29 @@ const testimonials = [
   {
     name: "Sarthak Patwal",
     avatar: "A",
-    title: "Software Engineer",
+    title: "FullStack Devloper.",
     description: "This is the best application I have used!",
   },
   {
     name: "Saurav",
     avatar: "A",
-    title: "Software Engineer",
-    description: "This is the best application I have used!",
+    title: "Backend Devloper.",
+    description:
+      "This AI tool is absolutely amazing! It's the best I've come across so far",
   },
   {
     name: "Tanish Bharadwaj",
     avatar: "A",
-    title: "Software Engineer",
-    description: "This is the best application I have used!",
+    title: "FrontEnd Engineer.",
+    description:
+      "This is by far the most efficient and user-friendly AI tool I've used. Incredible!",
   },
   {
-    name: "Ayush",
+    name: "Aryan Gupta",
     avatar: "A",
-    title: "Software Engineer",
-    description: "This is the best application I have used!",
+    title: "Software Engineer.",
+    description:
+      "I've tried many, but this AI tool stands out as the best. Super intuitive and powerful!",
   },
 ];
 const LandingContent = () => {

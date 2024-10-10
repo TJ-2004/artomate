@@ -1,8 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["lexica-serve-encoded-images.sharif.workers.dev"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "lexica-serve-encoded-images.sharif.workers.dev",
+        port: "",
+        pathname: "/**",
+      },
+    ],
   },
 };
-
 export default nextConfig;

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
 import { Montserrat } from "next/font/google";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import ShinyButton from "./ui/shiny-button";
 
 const font = Montserrat({
   weight: "600",
@@ -24,9 +24,9 @@ export const LandingNavbar = () => {
       </Link>
       <div className="flex items-center gap-x-2">
         <Link className="" href={isSignedIn ? "/dashboard" : "/sign-up"}>
-          <Button variant="outline" className="rounded-full">
+          <ShinyButton className="bg-white rounded-full relative z-10">
             Get Started
-          </Button>
+          </ShinyButton>
         </Link>
       </div>
     </nav>

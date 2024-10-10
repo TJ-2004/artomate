@@ -1,16 +1,16 @@
-
-import LandingContent from "@/components/landing-content";
+"use client";
 import LandingHero from "@/components/landing-hero";
 import { LandingNavbar } from "@/components/landing-navbar";
+import { Testimonials } from "@/components/testimonials";
 import React from "react";
 
 const LandingPage = () => {
   return (
-   <div className="h-full">
-    <LandingNavbar />
-    <LandingHero />
-    <LandingContent />
-   </div>
+    <div className="h-full">
+      <LandingNavbar />
+      <LandingHero />
+      <Testimonials />
+    </div>
   );
 };
 

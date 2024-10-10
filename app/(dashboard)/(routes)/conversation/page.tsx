@@ -37,7 +37,6 @@ const ConversationPage = () => {
         role: "user",
         content: values.prompt,
       };
-      const newMessages = [...messages, userMessage];
       // console.log(userMessage);
       const response = await axios.post("/api/conversation", {
         question: [{ content: userMessage.content }],
@@ -50,7 +49,7 @@ const ConversationPage = () => {
       setMessages((current) => [...current, userMessage, assistantMessage]);
       // console.log(messages);
       form.reset({ prompt: values.prompt });
-    } catch (error: any) {
+    } catch (error: unknown) {
       //To do Open Pro Model
       console.error("Error during API call:", error);
     } finally {

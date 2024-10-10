@@ -1,4 +1,4 @@
-import Image from "next/image";
+
 import React from "react";
 import WordPullUp from "./ui/word-pull-up";
 interface EmptyProps {

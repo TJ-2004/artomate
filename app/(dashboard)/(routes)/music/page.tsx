@@ -3,7 +3,6 @@ import * as z from "zod";
 import axios from "axios";
 import Heading from "@/components/heading";
 import { Music } from "lucide-react";
-import ReactMarkdown from "react-markdown";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { formSchema } from "./constants";
@@ -33,7 +32,7 @@ const MusicPage = () => {
       console.log(response.data.audio)
       setMusic(response.data.audio);
       form.reset({ prompt: values.prompt });
-    } catch (error: any) {
+    } catch (error: unknown) {
       //To do Open Pro Model
       console.error("Error during API call:", error);
     } finally {

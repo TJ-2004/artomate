@@ -37,7 +37,6 @@ const CodePage = () => {
         role: "user",
         content: values.prompt,
       };
-      const newMessages = [...messages, userMessage];
       // console.log(userMessage);
       const response = await axios.post("/api/code", {
         question: [{ content: userMessage.content }],
@@ -50,7 +49,7 @@ const CodePage = () => {
       setMessages((current) => [...current, userMessage, assistantMessage]);
       // console.log(messages);
       form.reset({ prompt: values.prompt });
-    } catch (error: any) {
+    } catch (error: unknown) {
       //To do Open Pro Model
       console.error("Error during API call:", error);
     } finally {
@@ -123,12 +122,12 @@ const CodePage = () => {
                 )}
                 <ReactMarkdown
                   components={{
-                    pre: ({ node, ...props }) => (
+                    pre: ({ ...props }) => (
                       <div className="overflow-auto w-full my-2 bg-black/10 p-2 rounded-lg">
                         <pre {...props} />
                       </div>
                     ),
-                    code: ({ node, ...props }) => (
+                    code: ({ ...props }) => (
                       <code
                         className="bg-black/10 rounded-lg p-1 "
                         {...props}

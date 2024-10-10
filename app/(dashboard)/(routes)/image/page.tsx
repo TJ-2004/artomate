@@ -3,7 +3,6 @@ import * as z from "zod";
 import axios from "axios";
 import Heading from "@/components/heading";
 import { Download, ImageIcon } from "lucide-react";
-import ReactMarkdown from "react-markdown";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { amountOptions, formSchema, resoluitonOptions } from "./constants";
@@ -13,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import EmptyComponent from "@/components/empty";
 import LoadingComponent from "@/components/loader";
-import { cn } from "@/lib/utils";
 import PulsatingButton from "@/components/ui/pulsating-button";
 import {
   Select,
@@ -33,7 +31,6 @@ interface Image {
 }
 const ImageGenerationPage = () => {
   const router = useRouter();
-  const [query, setQuery] = useState<string>("");
   const [images, setImages] = useState<Image[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -58,7 +55,7 @@ const ImageGenerationPage = () => {
         amount: values.amount,
         resolution: values.resolution,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error during API call:", error);
     } finally {
       router.refresh();
@@ -173,13 +170,13 @@ const ImageGenerationPage = () => {
             {images.map((image) => (
               <Card key={image.id} className="rounded-lg overflow-hidden">
                 <div className="relative aspect-square">
-                    <Image
-                      key={image.id}
-                      src={image.src}
-                      alt={image.prompt}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    />
+                  <Image
+                    key={image.id}
+                    src={image.src}
+                    alt={image.prompt}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
                 </div>
                 <CardFooter className="p-2">
                   <Button

@@ -39,7 +39,7 @@ const ConversationPage = () => {
       };
       // console.log(userMessage);
       const response = await axios.post("/api/conversation", {
-        question: [{ content: userMessage.content }],
+        question: userMessage.content,
       });
       // console.log({ content: userMessage.content });
       const assistantMessage: ChatMessage = {

@@ -20,6 +20,7 @@ const tools = [
     color: "text-violet-500",
     bgColor: "bg-violet-500/10",
     href: "/conversation",
+    enabled: true,
   },
   {
     label: "Music Generation",
@@ -27,6 +28,7 @@ const tools = [
     color: "text-emerald-500",
     bgColor: "bg-emerald-500/10",
     href: "/music",
+    enabled: false,
   },
   {
     label: "Image Generation",
@@ -34,6 +36,7 @@ const tools = [
     color: "text-pink-700",
     bgColor: "bg-pink-500/10",
     href: "/image",
+    enabled: true,
   },
   {
     label: "Video Generation",
@@ -41,6 +44,7 @@ const tools = [
     color: "text-orange-700",
     bgColor: "bg-orange-500/10",
     href: "/video",
+    enabled: false,
   },
   {
     label: "Code Generation",
@@ -48,8 +52,10 @@ const tools = [
     bgColor: "bg-green-500/10",
     color: "text-green-700",
     href: "/code",
+    enabled: true,
   },
 ];
+
 const DashboardPage = () => {
   const router = useRouter();
 
@@ -67,21 +73,30 @@ const DashboardPage = () => {
       <div className="px-4 md:px-20 lg:px-32 space-y-4  ">
         {tools.map((tool) => (
           <Card
-            onClick={() => router.push(tool.href)}
+            onClick={() => tool.enabled && router.push(tool.href)}
             key={tool.href}
-            className="p-4 flex items-center justify-between hover:shadow-md transition cursor-pointer border-black/5"
+            className={cn(
+              "p-4 flex items-center justify-between transition border-black/5",
+              tool.enabled 
+                ? "hover:shadow-md cursor-pointer" 
+                : "opacity-50 cursor-not-allowed"
+            )}
           >
             <div className="flex items-center gap-x-4">
               <div className={cn("p-2 w-fit rounded-md", tool.bgColor)}>
                 <tool.icon className={cn("h-8 w-8 ", tool.color)} />
               </div>
-              <div className="font-semibold">{tool.label}</div>
+              <div className="font-semibold">
+                {tool.label}
+                {!tool.enabled && <span className="text-xs text-gray-500 ml-2">(Coming Soon)</span>}
+              </div>
             </div>
-            <ArrowRight className="h-5 w-5" />
+            {tool.enabled && <ArrowRight className="h-5 w-5" />}
           </Card>
         ))}
       </div>
     </div>
   );
 };
+
 export default DashboardPage;

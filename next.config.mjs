@@ -8,6 +8,12 @@ const nextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "image.lexica.art",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
   outputFileTracingRoot: process.cwd(),

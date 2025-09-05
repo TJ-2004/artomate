@@ -24,14 +24,14 @@ import { Card, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
-interface Image {
+interface ImageItem {
   id: string;
   prompt: string;
   src: string;
 }
 const ImageGenerationPage = () => {
   const router = useRouter();
-  const [images, setImages] = useState<Image[]>([]);
+  const [images, setImages] = useState<ImageItem[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -44,16 +44,15 @@ const ImageGenerationPage = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setImages([]);
-      const response = await axios.get<{ images: Image[] }>(
-        `https://lexica.art/api/v1/search?q=${values.prompt}`
-      );
-      const amount = parseInt(values.amount, 10);
-      const limitedImages = response.data.images.slice(0, amount);
-      setImages(limitedImages);
+      const response = await axios.post<{ images: ImageItem[] }>("/api/image", {
+        prompt: values.prompt,
+        // amount: parseInt(values.amount, 10),
+      });
+      setImages(response.data.images || []);
       form.reset({
         prompt: values.prompt,
         amount: values.amount,
-        resolution: values.resolution,
+        resolution: values.resolution, // keep for UI, but has no effect
       });
     } catch (error: unknown) {
       console.error("Error during API call:", error);
@@ -175,12 +174,23 @@ const ImageGenerationPage = () => {
                     src={image.src}
                     alt={image.prompt}
                     fill
+                    unoptimized
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                 </div>
                 <CardFooter className="p-2">
                   <Button
-                    onClick={() => window.open(image.src)}
+                    onClick={() => {
+                      const link = document.createElement("a");
+                      link.href = image.src; // base64 PNG returned by API
+                      link.download = `${image.prompt.replace(
+                        /\s+/g,
+                        "_"
+                      )}.png`; // filename
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                    }}
                     variant="secondary"
                     className="w-full"
                   >

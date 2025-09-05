@@ -1,6 +1,7 @@
 "use client";
+
 import * as z from "zod";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import Heading from "@/components/heading";
 import { Download, ImageIcon } from "lucide-react";
 import React, { useState } from "react";
@@ -30,9 +31,11 @@ interface ImageItem {
   prompt: string;
   src: string;
 }
+
 const ImageGenerationPage = () => {
   const router = useRouter();
   const [images, setImages] = useState<ImageItem[]>([]);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -41,6 +44,7 @@ const ImageGenerationPage = () => {
       resolution: "512×512",
     },
   });
+
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -54,16 +58,23 @@ const ImageGenerationPage = () => {
       if (response.data.images && response.data.images.length > 0) {
         setImages(response.data.images);
         toast.success("🎉 Image generated successfully!");
+      } else {
+        toast.error("⚠️ No images were generated. Try again.");
       }
-    } catch (error: any) {
-      // Only log unknown errors
-      const errorMessage =
-        error.response?.data?.error ||
-        "Something went wrong. Please try again.";
+    } catch (error: unknown) {
+      let errorMessage = "Something went wrong. Please try again.";
 
-      // Suppress logging for known ClipDrop 422
-      if (error.response?.status !== 422) {
-        console.error("Axios error during API call:", error);
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 422) {
+          // ClipDrop inappropriate content
+          errorMessage =
+            "⚠️ Please enter an appropriate prompt. Some content cannot be generated.";
+        } else {
+          errorMessage = error.response?.data?.error || errorMessage;
+          console.error("Axios error during API call:", error);
+        }
+      } else {
+        console.error("Unknown error:", error);
       }
 
       toast.error(errorMessage);
@@ -81,101 +92,109 @@ const ImageGenerationPage = () => {
         iconColor="text-pink-700"
         bgColor="bg-pink-700/10"
       />
-      <div className="px-4 lg-px-8">
-        <div>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="rounded-lg border w-full p-4 px-3 md:px-6 focus-within:shadow-sm grid grid-cols-12 gap-2 "
-            >
-              <FormField
-                name="prompt"
-                render={({ field }) => (
-                  <FormItem className="col-span-12 lg:col-span-6">
-                    <FormControl className="m-0 p-0">
-                      <Input
-                        placeholder="A picture of a horse in Swiss alps"
-                        {...field}
-                        className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
-                        disabled={isLoading}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name="amount"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem className="col-span-12 lg:col-span-2">
-                    <Select
+      <div className="px-4 lg:px-8">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="rounded-lg border w-full p-4 px-3 md:px-6 focus-within:shadow-sm grid grid-cols-12 gap-2"
+          >
+            {/* Prompt Input */}
+            <FormField
+              name="prompt"
+              render={({ field }) => (
+                <FormItem className="col-span-12 lg:col-span-6">
+                  <FormControl className="m-0 p-0">
+                    <Input
+                      placeholder="A picture of a horse in Swiss alps"
+                      {...field}
+                      className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                       disabled={isLoading}
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue defaultValue={field.value} />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {amountOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name="resolution"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem className="col-span-12 lg:col-span-2">
-                    <Select
-                      disabled={isLoading}
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue defaultValue={field.value} />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {resoluitonOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormItem>
-                )}
-              />
-              <PulsatingButton
-                className="col-span-12 lg:col-span-2 w-full bg-[#111827]"
-                disabled={isLoading}
-              >
-                Generate
-              </PulsatingButton>
-            </form>
-          </Form>
-        </div>
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
 
+            {/* Amount Select */}
+            <FormField
+              name="amount"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem className="col-span-12 lg:col-span-2">
+                  <Select
+                    disabled={isLoading}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue defaultValue={field.value} />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {amountOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+
+            {/* Resolution Select */}
+            <FormField
+              name="resolution"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem className="col-span-12 lg:col-span-2">
+                  <Select
+                    disabled={isLoading}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue defaultValue={field.value} />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {resoluitonOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+
+            {/* Generate Button */}
+            <PulsatingButton
+              className="col-span-12 lg:col-span-2 w-full bg-[#111827]"
+              disabled={isLoading}
+            >
+              Generate
+            </PulsatingButton>
+          </form>
+        </Form>
+
+        {/* Loading, Empty, and Images */}
         <div className="space-y-4 mt-4">
           {isLoading && (
             <div className="p-20">
               <LoadingComponent label="Artomate is thinking..." />
             </div>
           )}
+
           {images.length === 0 && !isLoading && (
             <EmptyComponent label="Type your text and let AI generate an image instantly!" />
           )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
             {images.map((image) => (
               <Card key={image.id} className="rounded-lg overflow-hidden">
@@ -193,11 +212,8 @@ const ImageGenerationPage = () => {
                   <Button
                     onClick={() => {
                       const link = document.createElement("a");
-                      link.href = image.src; // base64 PNG returned by API
-                      link.download = `${image.prompt.replace(
-                        /\s+/g,
-                        "_"
-                      )}.png`; // filename
+                      link.href = image.src;
+                      link.download = `${image.prompt.replace(/\s+/g, "_")}.png`;
                       document.body.appendChild(link);
                       link.click();
                       document.body.removeChild(link);

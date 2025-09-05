@@ -46,20 +46,25 @@ const ImageGenerationPage = () => {
       setImages([]);
       const response = await axios.post<{ images: ImageItem[] }>("/api/image", {
         prompt: values.prompt,
-        // amount: parseInt(values.amount, 10),
       });
       setImages(response.data.images || []);
       form.reset({
         prompt: values.prompt,
         amount: values.amount,
-        resolution: values.resolution, // keep for UI, but has no effect
+        resolution: values.resolution,
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error("Error during API call:", error);
+  
+      // Show error from API
+      const errorMessage =
+        error.response?.data?.error || "Something went wrong. Please try again.";
+      alert(errorMessage); // 🔴 replace with toast/snackbar if you want
     } finally {
       router.refresh();
     }
   };
+  
 
   return (
     <div>

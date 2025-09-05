@@ -23,6 +23,7 @@ import {
 import { Card, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface ImageItem {
   id: string;
@@ -41,30 +42,35 @@ const ImageGenerationPage = () => {
     },
   });
   const isLoading = form.formState.isSubmitting;
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setImages([]);
+
     try {
-      setImages([]);
       const response = await axios.post<{ images: ImageItem[] }>("/api/image", {
         prompt: values.prompt,
       });
-      setImages(response.data.images || []);
-      form.reset({
-        prompt: values.prompt,
-        amount: values.amount,
-        resolution: values.resolution,
-      });
+
+      if (response.data.images && response.data.images.length > 0) {
+        setImages(response.data.images);
+        toast.success("🎉 Image generated successfully!");
+      }
     } catch (error: any) {
-      console.error("Error during API call:", error);
-  
-      // Show error from API
+      // Only log unknown errors
       const errorMessage =
-        error.response?.data?.error || "Something went wrong. Please try again.";
-      alert(errorMessage); // 🔴 replace with toast/snackbar if you want
+        error.response?.data?.error ||
+        "Something went wrong. Please try again.";
+
+      // Suppress logging for known ClipDrop 422
+      if (error.response?.status !== 422) {
+        console.error("Axios error during API call:", error);
+      }
+
+      toast.error(errorMessage);
     } finally {
       router.refresh();
     }
   };
-  
 
   return (
     <div>

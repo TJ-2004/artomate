@@ -28,14 +28,20 @@ export async function POST(req: Request) {
     if (!response.ok) {
       const errorText = await response.text();
       console.error("ClipDrop API error:", response.status, errorText);
-
+    
       return NextResponse.json(
         {
-          error: `ClipDrop API error: ${response.status} ${errorText}`,
+          error:
+            errorText.includes("Unacceptable content detected")
+              ? "⚠️ Please enter an appropriate prompt. Some content cannot be generated."
+              : "Something went wrong. Please try again.",
         },
-        { status: response.status }
+        { status: response.status } // keep 422 so frontend knows it failed
       );
     }
+    
+    
+    
 
     // ClipDrop returns PNG directly → convert to base64
     const arrayBuffer = await response.arrayBuffer();

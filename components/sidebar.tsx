@@ -35,6 +35,18 @@ const routes = [
     color: "text-pink-700",
   },
   {
+    label: "Remove Background",
+    icon: ImageIcon,
+    href: "/remove-background",
+    color: "text-pink-700",
+  },
+  {
+    label: "Replace Background",
+    icon: ImageIcon,
+    href: "/replace-background",
+    color: "text-pink-700",
+  },
+  {
     label: "Video Generation",
     icon: Video,
     href: "/video",
